@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianjs.bps.io.mapper.InProductLogMapper">
+	 <resultMap type="com.tianjs.bps.io.vo.InOrderVo" id="inPrdLogMap">
+		<result column="ID" property="id" javaType="java.lang.String" />
+		<result column="BATCH_NO" property="batchNo" javaType="java.lang.String" />
+		<result column="PRODUCT_CD" property="productCd" javaType="java.lang.String" />
+		<result column="PRODUCT_NM" property="productNm" javaType="java.lang.String" />
+		<result column="IN_COUNT" property="inCount" javaType="java.lang.Integer" />
+		<result column="IN_REGISTER_TM" property="inRegisterTm" javaType="java.lang.String" />
+		<result column="product_address" property="prdAddress" javaType="java.lang.String" />
+		<result column="IN_AMOUNT" property="inSumAmt" javaType="java.math.BigDecimal" />
+		<result column="BASE_PRICE" property="basePrice" javaType="java.math.BigDecimal" />
+		<result column="RMK" property="rmk" javaType="java.lang.String" />
+	</resultMap>
+	 <select id="findInPrdLog" parameterType="com.tianjs.bps.io.vo.InOrder" resultMap="inPrdLogMap">
+		SELECT 	ID, 
+				PRODUCT_CD, 
+				IN_COUNT, 
+				IN_REGISTER_TM, 
+				BATCH_NO, 
+				PRODUCT_ADDRESS, 
+				IN_AMOUNT, 
+				BASE_PRICE, 
+				RMK
+		FROM IN_PRODUCT_LOG
+		 WHERE 1 =1
+		<if test="batchNo !=null and !''.equals(batchNo)">
+			AND BATCH_NO LIKE #{batchNo}
+		</if>  
+		<if test="productCd !=null and !''.equals(productCd)">
+			AND PRODUCT_CD LIKE #{productCd}
+		</if>
+		<if test="inRegisterTm !=null and !''.equals(inRegisterTm)">
+			AND IN_REGISTER_TM = #{inRegisterTm}
+		</if>
+		limit #{startRow},#{pageSize}
+	</select>
+	<select id="findInPrdLogCnt" parameterType="com.tianjs.bps.io.vo.InOrderVo" resultType="java.lang.Integer">
+		SELECT 
+		count(1) AS CNT 
+		FROM IN_PRODUCT_LOG 
+		WHERE 1 =1
+		<if test="batchNo !=null and !''.equals(batchNo)">
+			AND BATCH_NO LIKE #{batchNo}
+		</if>  
+		<if test="productCd !=null and !''.equals(productCd)">
+			AND PRODUCT_CD LIKE #{productCd}
+		</if>
+		 <if test="inRegisterTm !=null and !''.equals(inRegisterTm)">
+			AND IN_REGISTER_TM = #{inRegisterTm}
+		</if>
+	</select>
+	<insert id="saveInPrdLog" parameterType="com.tianjs.bps.io.vo.InOrderVo" >
+		INSERT INTO IN_PRODUCT_LOG 
+	(ID, 
+	PRODUCT_CD,
+	IN_COUNT, 
+	IN_REGISTER_TM, 
+	BATCH_NO, 
+	PRODUCT_ADDRESS, 
+	IN_AMOUNT, 
+	BASE_PRICE, 
+	RMK
+	)
+	VALUES
+	(#{id}, 
+	#{productCd}, 
+	#{inCount}, 
+	#{inRegisterTm}, 
+	#{batchNo}, 
+	#{prdAddress}, 
+	#{inSumAmt}, 
+	#{basePrice},
+	#{rmk}
+	)
+	</insert>
+	<update id="updateInPrdLog" parameterType="com.tianjs.bps.io.vo.InOrderVo">
+		update IN_PRODUCT_LOG
+		set ID = ID
+		<if test="inCount !=null ">
+		,IN_COUNT = #{inCount}
+		</if>
+		<if test="inSumAmt !=null">
+		,IN_AMOUNT = #{inSumAmt}
+		</if>
+		<if test="basePrice !=null">
+		,BASE_PRICE = #{basePrice}
+		</if>
+		WHERE ID = #{id} 
+	</update>
+	
+	<delete id="deleteInPrdLogByBatchNo" parameterType="com.tianjs.bps.io.vo.InOrderVo">
+	</delete> 
+</mapper>

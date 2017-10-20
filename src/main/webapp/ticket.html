@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>票据</title>
+    <style>
+@media print{
+　　.noprint{
+  　　display:none
+　　}
+}
+</style>
+<link href="http://localhost:8080/bps/script/plugins/bootstrap.min.css" rel="stylesheet"/>
+
+<!-- 可选的Bootstrap主题文件（一般不使用） -->
+<link href="http://localhost:8080/bps/script/plugins/bootstrap-theme.min.css"rel="stylesheet"/>
+
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="http://localhost:8080/bps/script/plugins/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="http://localhost:8080/bps/script/plugins/bootstrap.min.js"></script>
+</head>
+<body id="ticketBody">
+<div class="container"id="sendModal">
+			<OBJECT classid="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2" height="0" id="wb" name="wb" width="0"></OBJECT>
+			<div >
+				<div >
+					<div style="height:280px;" id="addressInfo">
+						 <div class="row">
+						    <label class="col-md-1 control-label text-lable">订单编号:</label>
+							<span id="outBatchNo" class="col-md-2 text-left" ></span>
+						</div>
+						 <div  class="row">
+						   <label class="col-md-1 control-label text-lable">收货人:</label><span class="col-md-2 text-left"  id="custNm"></span>
+						   <label class="col-md-1 control-label text-lable">联系方式:</label><span class="col-md-2 text-left"  id="contact"></span>
+						  
+						</div>
+						<div  class="row">
+						   <label class="col-md-1 control-label text-lable">送货地址:</label><span class="col-md-2 text-left"  id="address"> </span>
+						</div>
+						 </br>
+						 <div class=" table-responsive" id="orderList">
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div> 
+
+<script type="text/javascript">
+var afterUrl =  window.location.search.substring(1);//(问号以后的字符串)
+var afterEqual = afterUrl.substring(afterUrl.indexOf('=')+1);
+$.post('http://localhost:8080/bps/back/outOrder/querySend',{outBatchNo:afterEqual},function(data){
+	var data  = JSON.parse(data);
+	var list = data.resultList;
+	console.log(list[0]);
+	$('#outBatchNo').html(list[0].outBatchNo);
+	$('#custNm').html(list[0].custNm);
+	$('#contact').html(list[0].contact);
+	$('#address').html(list[0].address);
+});
+$.post('http://localhost:8080/bps/back/outOrder/queryList',{outBatchNo:afterEqual},function(data){
+	var dataList = JSON.parse(data);
+	console.log(dataList);
+	$('#orderList').html('');
+	var htmlText = "<table class='table table-bordered'> <tr><th>产品型号</th><th>数量(台)</th><th>计价(元)</th><th>状态</th></tr>";
+	var temp="";
+	$.each(dataList,function(index,obj){
+		temp = temp +"<tr><td>"+obj.productCd+"</td><td>"+obj.outCount+"</td><td>"+obj.outSumAmt+"</td><td>"+obj.sta+"</td></tr>";
+	})
+	$('#orderList').append(htmlText+temp+"</table>");
+});
+
+$('#ticketBody').click(function(){
+		window.print();
+	})
+	
+	
+</script>
+</body>
+</html>

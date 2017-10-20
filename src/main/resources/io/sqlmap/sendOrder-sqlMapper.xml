@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianjs.bps.io.mapper.SendOrderMapper">
+	<resultMap type="com.tianjs.bps.io.entity.SendOrderRl" id="sendOrderMap">
+		<result column="ID" property="id" javaType="java.lang.String"/>
+		<result column="CUST_ID" property="custId" javaType="java.lang.String"/>
+		<result column="OUT_BATCH_NO" property="outBatchNo" javaType="java.lang.String"/>
+		<result column="send_flag" property="sendFlag" javaType="java.lang.String"/>
+		<result column="send_dt" property="sendDt" javaType="java.lang.String"/>
+		<result column="create_tm" property="crtDt" javaType="java.lang.String"/>
+		<result column="CUST_NM" property="custNm" javaType="java.lang.String"/>
+		<result column="CONTACT" property="contact" javaType="java.lang.String"/>
+		<result column="ADDRESS" property="address" javaType="java.lang.String"/>
+	</resultMap>
+	<select id="querySendOrder" parameterType="com.tianjs.bps.io.entity.SendOrderRl" resultMap="sendOrderMap">		
+	   SELECT a.ID, 
+		CUST_ID, 
+		OUT_BATCH_NO, 
+		SEND_FLAG, 
+		SEND_DT,
+		CREATE_TM,
+		CUST_NM,
+		CONTACT,
+		ADDRESS
+	FROM OUT_SEND_RL a,IO_CUST_B b
+	 WHERE A.CUST_ID = B.ID
+	<if test="custNm !=null and !''.equals(custNm)">
+		AND CUST_NM like #{custNm}
+	</if>
+	<if test="outBatchNo !=null and !''.equals(outBatchNo)">
+		AND OUT_BATCH_NO like #{outBatchNo}
+	</if> 
+	<if test="sendDt !=null and !''.equals(sendDt)">
+		AND send_dt = #{sendDt}
+	</if> 
+	limit #{startRow},#{pageSize}
+	</select>
+   <select id="findSendListCnt" parameterType="com.tianjs.bps.io.entity.SendOrderRl" resultType="java.lang.Integer">		
+	   SELECT count(1)as cnt
+	FROM OUT_SEND_RL a,IO_CUST_B b
+	 WHERE A.CUST_ID = B.ID
+	<if test="custNm !=null and !''.equals(custNm)">
+		AND CUST_NM like #{custNm}
+	</if>
+	<if test="outBatchNo !=null and !''.equals(outBatchNo)">
+		AND OUT_BATCH_NO like #{outBatchNo}
+	</if> 
+	<if test="sendDt !=null and !''.equals(sendDt)">
+		AND send_dt = #{sendDt}
+	</if> 
+	</select>
+	
+	<insert id="saveSendOrder" parameterType="com.tianjs.bps.io.entity.SendOrderRl">		
+	INSERT INTO OUT_SEND_RL 
+	(ID, 
+	CUST_ID, 
+	OUT_BATCH_NO, 
+	SEND_FLAG, 
+	SEND_DT, 
+	CREATE_TM
+	)
+	VALUES
+	(#{id}, 
+	#{custId}, 
+	#{outBatchNo}, 
+	#{sendFlag}, 
+	#{sendDt}, 
+	#{crtDt}
+	)
+	</insert>
+</mapper>

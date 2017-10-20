@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianjs.bps.io.mapper.IoMenuMapper">
+	<resultMap type="com.tianjs.bps.io.entity.IoMenuBean" id="menuBaseMap">
+		<result column="ID" property="id" javaType="java.lang.Integer"/>
+		<result column="PARENT_ID" property="parentId" javaType="java.lang.Integer"/>
+		<result column="MENU_NM" property="menuNm" javaType="java.lang.String"/>
+		<result column="URL" property="url" javaType="java.lang.String"/>
+		<result column="IS_USABLE" property="isUsable" javaType="java.lang.Integer"/>
+	</resultMap>
+	<select id="findMenuList" parameterType="com.tianjs.bps.io.entity.IoMenuBean" resultMap="menuBaseMap">		
+	SELECT ID, 
+		PARENT_ID, 
+		MENU_NM, 
+		URL,
+		IS_USABLE
+	FROM IO_MENU_B
+	</select>
+</mapper>

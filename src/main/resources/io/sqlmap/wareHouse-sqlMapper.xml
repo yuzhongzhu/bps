@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianjs.bps.io.mapper.IoWareHouseMapper">
+	<resultMap type="com.tianjs.bps.io.entity.IoWareHouseBean" id="wareHouseMap">
+		<result column="ID" property="id" javaType="java.lang.String"/>
+		<result column="PRODUCT_CD" property="productCd" javaType="java.lang.String"/>
+		<result column="REMAIN_AMT" property="remainAmt" javaType="java.lang.Integer"/>
+		<result column="UPDATE_TM" property="updateTm" javaType="java.lang.String"/>
+		<result column="OPER_ID" property="operId" javaType="java.lang.String"/>
+		<result column="VERSION_NO" property="versionNo" javaType="java.lang.Integer"/>
+	</resultMap>
+	<select id="findWareHouse" parameterType="com.tianjs.bps.io.model.IoWareHouseModel" resultMap="wareHouseMap">		
+	SELECT ID, 
+		PRODUCT_CD, 
+		REMAIN_AMT, 
+		UPDATE_TM,
+		OPER_ID,
+		VERSION_NO
+	FROM IO_WAREHOUSE_B 
+	WHERE 1 = 1
+	<if test=" productCd !=null and !''.equals(productCd)"  >
+	 AND PRODUCT_CD LIKE #{productCd}
+	</if>
+	limit #{startRow},#{pageSize}
+	</select>
+	
+	<select id="findWareHouseCnt" parameterType="com.tianjs.bps.io.entity.IoWareHouseBean" resultType="java.lang.Integer">		
+	SELECT count(1) as cnt
+	FROM IO_WAREHOUSE_B 
+	WHERE 1 = 1
+	<if test=" productCd !=null and !''.equals(productCd)"  >
+	 AND PRODUCT_CD LIKE #{productCd}
+	</if>
+	</select>
+	<insert id="addWareHouse" parameterType="com.tianjs.bps.io.entity.IoWareHouseBean">
+		INSERT INTO IO_WAREHOUSE_B 
+	(ID, 
+	PRODUCT_CD, 
+	REMAIN_AMT, 
+	UPDATE_TM,
+	OPER_ID
+	)
+	VALUES
+	(
+		#{id},
+		#{productCd},
+		#{remainAmt},
+		#{updateTm},
+		#{operId}
+	)
+	</insert>
+	
+	<update id="updateWareHouse" parameterType="com.tianjs.bps.io.entity.IoWareHouseBean">
+    UPDATE IO_WAREHOUSE_B
+	SET REMAIN_AMT = #{remainAmt},
+		UPDATE_TM = #{updateTm},
+		PRODUCT_CD = #{productCd},
+		VERSION_NO = VERSION_NO +1
+	WHERE ID = #{id} AND VERSION_NO = #{versionNo}
+	</update>
+</mapper>

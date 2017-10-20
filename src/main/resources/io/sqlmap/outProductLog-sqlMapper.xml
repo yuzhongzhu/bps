@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianjs.bps.io.mapper.OutProductLogMapper">
+	<resultMap type="com.tianjs.bps.io.entity.OutProductLogBean" id="outPrdLogMap">
+		<result column="ID" property="id" javaType="java.lang.String" />
+		<result column="OUT_BATCH_NO" property="outBatchNo" javaType="java.lang.String" />
+		<result column="OUT_REGISTER_TM" property="outRegisterTm" javaType="java.lang.String" />
+		<result column="PRODUCT_CD" property="productCd" javaType="java.lang.String" />
+		<result column="OUT_COUNT" property="outCount" javaType="java.lang.Integer" />
+		<result column="SALE_PRICE" property="salePrice" javaType="java.math.BigDecimal" />
+		<result column="DISCOUNT" property="disCount" javaType="java.math.BigDecimal" />
+		<result column="OUT_SUM_AMT" property="outSumAmt" javaType="java.math.BigDecimal" />
+		<result column="RMK" property="rmk" javaType="java.lang.String" />
+		<result column="STA" property="sta" javaType="java.lang.String" />
+	</resultMap>
+	<select id="findOutPrdLog" parameterType="com.tianjs.bps.io.entity.OutProductLogBean" resultMap="outPrdLogMap">
+		SELECT 	ID, 
+		OUT_BATCH_NO, 
+		OUT_REGISTER_TM, 
+		PRODUCT_CD, 
+		OUT_COUNT, 
+		SALE_PRICE, 
+		DISCOUNT, 
+		OUT_SUM_AMT, 
+		CASE WHEN STA = '1' THEN
+		'正常'
+		ELSE
+		'取消'
+		END as STA,
+		RMK
+		FROM OUT_PRODUCT_LOG 
+		WHERE 1 = 1
+		<if test="id !=null and !''.equals(id)  ">
+			AND ID = #{id}
+		</if>
+		<if test="outBatchNo !=null and !''.equals(outBatchNo)  ">
+			AND OUT_BATCH_NO like #{outBatchNo}
+		</if>
+		<if test="productCd !=null and !''.equals(productCd)">
+			AND PRODUCT_CD like #{productCd}
+		</if>
+		<if test="outRegisterTm !=null and !''.equals(outRegisterTm)">
+			AND OUT_REGISTER_TM = #{outRegisterTm}
+		</if>
+	</select>
+	<select id="findOutPrdLogCnt" parameterType="com.tianjs.bps.io.entity.OutProductLogBean" resultType="java.lang.Integer">
+		SELECT count(1)as cnt
+		FROM OUT_PRODUCT_LOG 
+		WHERE 1 = 1
+		<if test="outBatchNo !=null and !''.equals(outBatchNo)  ">
+			AND OUT_BATCH_NO like #{outBatchNo}
+		</if>
+		<if test="productCd !=null and !''.equals(productCd)">
+			AND PRODUCT_CD like #{productCd}
+		</if>
+		<if test="outRegisterTm !=null and !''.equals(outRegisterTm)">
+			AND OUT_REGISTER_TM = #{outRegisterTm}
+		</if>
+	</select>
+	<insert id="saveOutPrdLog" parameterType="com.tianjs.bps.io.entity.OutProductLogBean" >
+		INSERT INTO OUT_PRODUCT_LOG 
+	(ID, 
+	OUT_BATCH_NO, 
+	OUT_REGISTER_TM, 
+	PRODUCT_CD, 
+	OUT_COUNT, 
+	SALE_PRICE, 
+	DISCOUNT, 
+	OUT_SUM_AMT, 
+	STA,
+	RMK
+	)
+	VALUES
+	(
+	#{id},
+	#{outBatchNo},
+	#{outRegisterTm},
+	#{productCd},
+	#{outCount},
+	#{salePrice,jdbcType=NUMERIC},
+	#{disCount,jdbcType=NUMERIC},
+	#{outSumAmt,jdbcType=NUMERIC},
+	'1',
+	#{rmk,jdbcType=VARCHAR}
+	)
+	</insert>
+	<update id="updateOutPrdLog" parameterType="com.tianjs.bps.io.entity.OutProductLogBean">	
+	  UPDATE OUT_PRODUCT_LOG 
+		SET
+		<if test=" productCd != null ">
+		 PRODUCT_CD = #{productCd} , 
+		</if>
+		<if test=" outCount != null ">
+		 OUT_COUNT = #{outCount} , 
+		</if>
+		<if test=" salePrice != null ">
+		 SALE_PRICE = #{salePrice,jdbcType=NUMERIC} , 
+		</if>
+		<if test=" disCount != null ">
+		 DISCOUNT =  #{disCount,jdbcType=NUMERIC} , 
+		</if>
+		<if test=" outSumAmt != null ">
+		 OUT_SUM_AMT = #{outSumAmt,jdbcType=NUMERIC}, 
+		</if>
+		<if test=" sta != null ">
+		  STA = #{sta,jdbcType=VARCHAR},
+		</if>
+		<if test=" rmk != null ">
+		  RMK = #{rmk,jdbcType=VARCHAR},
+		</if>
+		  ID = #{id}
+		WHERE ID = #{id} ;	
+	</update>
+	<delete id="deleteOutPrdLogByBatchNo" parameterType="com.tianjs.bps.io.entity.OutProductLogBean">
+		
+	</delete>
+</mapper>

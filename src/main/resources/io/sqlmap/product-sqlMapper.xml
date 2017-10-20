@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianjs.bps.io.mapper.ProductMapper">
+	<resultMap type="com.tianjs.bps.io.entity.ProductBaseBean" id="productBaseMap">
+		<result column="ID" property="id" javaType="java.lang.String"/>
+		<result column="PRODUCT_CD" property="productCd" javaType="java.lang.String"/>
+		<result column="PRODUCT_NM" property="productNm" javaType="java.lang.String"/>
+		<result column="BASE_PRICE" property="basePrice" javaType="java.math.BigDecimal"/>
+		<result column="PRICE" property="price" javaType="java.math.BigDecimal"/>
+		<result column="UNIT" property="unit" javaType="java.lang.String"/>
+		<result column="PARAM" property="param" javaType="java.lang.String"/>
+	</resultMap>
+	<select id="queryProduct" parameterType="com.tianjs.bps.io.vo.ProductInfoVo" resultMap="productBaseMap">		
+	SELECT ID, 
+		PRODUCT_CD, 
+		PRODUCT_NM, 
+		BASE_PRICE, 
+		PRICE, 
+		UNIT,
+		PARAM
+	FROM IO_PRODUCT_B 
+	WHERE 1 = 1
+	<if test=" productCd != null and !''.equals(productCd)">
+		AND PRODUCT_CD LIKE #{productCd}
+	</if>
+	<if test=" productNm != null and !''.equals(productNm) ">
+		AND PRODUCT_NM LIKE #{productNm}
+	</if>
+	LIMIT #{startRow},#{pageSize}
+	</select>
+	<select id="queryProductCount" parameterType="com.tianjs.bps.io.vo.ProductInfoVo" resultType="java.lang.Integer">		
+	SELECT count(id) as cnt
+	FROM IO_PRODUCT_B 
+	WHERE 1 = 1
+	<if test=" productCd != null and !''.equals(productCd)">
+		AND PRODUCT_CD LIKE #{productCd}
+	</if>
+	<if test=" productNm != null and !''.equals(productNm) ">
+		AND PRODUCT_NM LIKE #{productNm}
+	</if>
+	</select>
+	
+	<select id="queryProductbyCd" parameterType="java.util.HashMap" resultMap="productBaseMap">		
+	SELECT ID, 
+		PRODUCT_CD, 
+		PRODUCT_NM, 
+		BASE_PRICE, 
+		PRICE, 
+		UNIT,
+		PARAM
+	FROM IO_PRODUCT_B 
+	<if test= '"=".equals(param1)'>
+	   WHERE PRODUCT_CD = #{param2}
+	</if>
+	<if test= '"LIKE".equals(param1)'>
+	   WHERE PRODUCT_CD LIKE #{param2}
+	</if>
+	</select>
+	
+	<insert id="saveProduct" parameterType="com.tianjs.bps.io.entity.ProductBaseBean">
+		INSERT INTO IO_PRODUCT_B 
+	(ID, 
+	PRODUCT_CD, 
+	PRODUCT_NM, 
+	BASE_PRICE, 
+	PRICE, 
+	UNIT,
+	PARAM
+	)
+	VALUES
+	(
+		#{id},
+		#{productCd},
+		#{productNm},
+		#{basePrice,jdbcType=NUMERIC},
+		#{price,jdbcType=NUMERIC},
+		#{unit,jdbcType=VARCHAR},
+		#{param,jdbcType=VARCHAR}	
+	)
+	</insert>
+	
+	<update id="updateProduct" parameterType="com.tianjs.bps.io.entity.ProductBaseBean">
+    UPDATE IO_PRODUCT_B
+	SET
+	<if test=" productCd !=null ">
+		PRODUCT_CD = #{productCd},
+	</if>
+	<if test=" productNm !=null "> 
+		PRODUCT_NM = #{productNm}, 
+	</if>
+	<if test=" basePrice !=null ">
+	    BASE_PRICE = #{basePrice} , 
+	</if>
+	<if test=" price !=null ">
+		PRICE = #{price} , 
+	</if>
+	<if test="unit !=null ">
+		UNIT = #{unit},
+	</if>
+	<if test="param !=null ">
+		PARAM = #{param},
+	</if>
+	ID = #{id}
+	WHERE ID = #{id}
+	</update>
+</mapper>
